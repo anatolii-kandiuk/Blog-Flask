@@ -1,0 +1,23 @@
+{% from "_render_field.html" import render_field %}
+{% extends 'base.html' %}
+
+{%block title%}
+Login
+{% endblock %}
+
+{% block content %}
+
+<div class="w-50 m-auto">
+    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Login</p>
+    <form method="POST">
+        {{ form.csrf_token }}
+            
+        {{ render_field(form.email, class='form-control', placeholder='Enter email') }}
+
+        {{ render_field(form.password, class='form-control', placeholder='Enter password') }}
+
+        {{ render_field(form.submit_button, class='btn btn-secondary', value='Login!') }}
+    </form>
+</div>
+
+{% endblock %}

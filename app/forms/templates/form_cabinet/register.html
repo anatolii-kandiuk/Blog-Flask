@@ -1,0 +1,27 @@
+{% from "_render_field.html" import render_field %}
+{% extends 'base.html' %}
+
+{%block title%}
+Register
+{% endblock %}
+
+{% block content %}
+
+<div class="w-50 m-auto">
+    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up to system</p>
+    <form method="POST">
+        {{ form.csrf_token }}
+
+        {{ render_field(form.username, class='form-control', placeholder='Length between 6 and 14') }}
+
+        {{ render_field(form.email, class='form-control', placeholder='Email must be valid') }}
+
+        {{ render_field(form.password, class='form-control', placeholder='At least 6 symbols') }}
+ 
+        {{ render_field(form.password_confirmation, class='form-control', placeholder='Repeat your password') }}
+
+        {{ render_field(form.submit_button, class='btn btn-secondary', value='Sign up!') }}
+    </form>
+</div>
+
+{% endblock %}
