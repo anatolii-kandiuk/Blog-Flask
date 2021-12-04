@@ -1,13 +1,70 @@
 {% extends 'base.html' %}
+{% from "_render_field.html" import render_field %}
 
 {% block title %}
-{{user.username}}`s account
+    {{user.username}}
 {% endblock %}
 
-{% block content %}
-<ul>
-    Account of {{user.username}}
-    <li>Email: {{user.email}}</li>
-    <li>Image: {{user.image_file}}</li>
-</ul>
+{%block content%}
+    <div class="container rounded bg-white mt-5 mb-5">
+        <div class="row">
+            <div class="col-md-5 border-right">
+                <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                    <img src="{{ image }}" class="rounded-circle account-img" style="width: 150px; height: 150px" />
+                    <h2 class="account-heading">{{ user.username }}</h2>
+                    <p class="text-secondary"> {{ user.email }} </p>
+                </div>
+            </div>
+            <div class="col-md-5 border-right">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Profile Settings</h4>
+                    </div>
+                    <div class="row mt-3">
+                        <form method="POST" enctype="multipart/form-data">
+                            {{ form.csrf_token }}
+                            <div class="form-group">
+                                {{ render_field(form.email, class='form-control', placeholder='Enter email') }}
+                            </div>
+                            <div class="form-group">
+                                {{ render_field(form.username, class='form-control', placeholder='Enter username') }}
+                            </div>
+                            <div class="form-group">
+                                {{ render_field(form.picture, class='form-control') }}
+                            </div>
+                            {{ render_field(form.submit_button, class='btn btn-primary', value='Save Profile!') }}
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+    </div>
+    {#<div class="content-section">#}
+    {##}
+    {#    <div class="media">#}
+    {#        <img src="{{ image }}" class="rounded-circle account-img" style="width: 150px; height: 150px" />#}
+    {#    </div>#}
+    {#    <div class="media-body">#}
+    {#        <h2 class="account-heading">{{ user.username }}</h2>#}
+    {#        <p class="text-secondary"> {{ user.email }} </p>#}
+    {#    </div>#}
+    {#    <div class="form">#}
+    {#        <form method="POST" enctype="multipart/form-data">#}
+    {#            {{ form.csrf_token }}#}
+    {#            <div class="form-group">#}
+    {#                {{ render_field(form.email, class='form-control', placeholder='Enter email') }}#}
+    {#            </div>#}
+    {#            <div class="form-group">#}
+    {#                {{ render_field(form.username, class='form-control', placeholder='Enter username') }}#}
+    {#            </div>#}
+    {#            <div class="form-group">#}
+    {#                {{ render_field(form.picture, class='form-control') }}#}
+    {#            </div>#}
+    {#            {{ render_field(form.submit_button, class='btn btn-secondary', value='Update!') }}#}
+    {#        </form>#}
+    {#    </div>#}
+    {#</div>#}
 {% endblock %}
