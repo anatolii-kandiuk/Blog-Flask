@@ -1,9 +1,10 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
-from wtforms import StringField, PasswordField, SubmitField, FileField
-from wtforms.validators import DataRequired, Length, Regexp, EqualTo, Email, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, FileField, TextAreaField
+from wtforms.validators import DataRequired, Length, Regexp, EqualTo, Email, ValidationError, InputRequired
 from flask_login import current_user
 from .models import User
+from .. import bcrypt
 
 
 class RegistrationForm(FlaskForm):
@@ -44,6 +45,8 @@ class UpdateAccountForm(FlaskForm):
     picture = FileField('Update profile picture',
                         validators=[FileAllowed(['jpg', 'png'])])
 
+    about_me = TextAreaField('About Me', validators=[DataRequired(), Length(max=500)])
+
     submit_button = SubmitField(label=(''))
 
     def validate_email(self, field):
@@ -55,3 +58,18 @@ class UpdateAccountForm(FlaskForm):
         if field.data != current_user.username:
             if User.query.filter_by(username=field.data).first():
                 raise ValidationError('Inputed username is already exist in the system!')
+
+class ResetPasswordForm(FlaskForm):
+    old_password = PasswordField('Old Password', validators=[DataRequired()])
+
+    new_password = PasswordField('Password', validators=[InputRequired('Password is required'),
+                                                          Length(min=6, message='Must be at least 6')])
+
+    r_new_password = PasswordField('Repeat the password', validators=[InputRequired('Password is required'),
+                                                                     Length(min=6, message='Must be at least 6'),
+                                                                     EqualTo('new_password')])
+    submit_button = SubmitField(label=(''))
+
+    def validate_old_password(self, field):
+        if not bcrypt.check_password_hash(current_user.password, field.data):
+            raise ValidationError('Error')
