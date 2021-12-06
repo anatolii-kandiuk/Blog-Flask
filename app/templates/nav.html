@@ -1,4 +1,3 @@
-
 <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom shadow-sm">
     <div class="container-fluid d-flex flex-column flex-md-row align-items-center">
         <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">Flask</a>
@@ -19,7 +18,7 @@
                 <li class="nav-item dropdown">
 
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
-                        Dropdown
+                        Account
                     </a>
                     <ul class="dropdown-menu">
                         <li class="nav-item">
@@ -28,6 +27,7 @@
                         <li class="nav-item">
                             <a class="nav-link dropdown-item" href="{{ url_for('auth.users') }}">Users</a>
                         </li>
+
                         {% if current_user.is_authenticated %}
                             <li class="nav-item">
                                 <a class="nav-link dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a>
@@ -42,11 +42,29 @@
                         {% endif %}
                     </ul>
                 </li>
+            <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                        PC
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item">
+                            <a class="nav-link dropdown-item" href="{{ url_for('pc.home') }}">Computers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link dropdown-item" href="{{ url_for('pc.create') }}">Add Computer</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link dropdown-item" href="{{ url_for('pc.category_crud') }}">Add Category</a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
 
         </div>
 
     </div>
 </nav>
+
+
 
 

@@ -1,0 +1,61 @@
+{% from "_render_field.html" import render_field %}
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="row">
+
+            <div class="card col-md-11 mt-11">
+                <img class="card-img-top" src="{{ url_for('static', filename='profile_pics/' + pk.image_file) }}">
+                <div class="card-body">
+                    <h4><a href="{{ url_for('pc.detail', id=pk.id) }}">{{ pk.firm }}</a></h4>
+                    <p class="card-text">Processor: {{ pk.type_processor }}</p>
+                    <p class="card-text">Clock frequency: {{ pk.clock_frequency }}</p>
+                    <p class="card-text">RAM: {{ pk.category.amount_ram }}</p>
+                    <p class="card-text">
+                        {% if pk.is_available %}
+                            Is available
+                        {% else %}
+                            Isn`t available
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Created: {{ pk.date_created }}</small>
+                </div>
+                <div class="buttons">
+                    {% if current_user.id == pk.user_id %}
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Delete
+                        </button>
+                        <!-- Edit !-->
+                        <a href="{{ url_for('pc.edit', id=pk.id) }}">
+                            <button class="btn btn-primary">Edit</button>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Delete -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <form action="{{ url_for('pc.delete', id=pk.id) }}" method="POST"> <!-- delete !-->
+                        <button class="btn btn-danger" type="submit">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

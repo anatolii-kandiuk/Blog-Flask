@@ -1,0 +1,41 @@
+{% from "_render_field.html" import render_field %}
+{% from "_render_flash.html" import render_flash %}
+{% extends 'base.html' %}
+{% block content %}
+{{ render_flash() }}
+<div class="container d-flex justify-content-center align-items-center">
+        <div class="row">
+            <div class="col-md-14">
+                <div class="p-3 py-5">
+                    <div class="row mt-3">
+                        <form method="POST" enctype="multipart/form-data">
+                            {{ form.csrf_token }}
+                            <div class="form-group">
+                                {{ render_field(form.firm, class='form-control', placeholder='Enter firm') }}
+                            </div>
+                            <div class="form-group">
+                                {{ render_field(form.type_processor, class='form-control', placeholder='Enter type processor') }}
+                            </div>
+                            <div class="form-group">
+                                {{ render_field(form.clock_frequency, class='form-control', placeholder='Enter clock frequency') }}
+                            </div>
+                             <div class="form-group">
+                                {{ render_field(form.image_file, class='form-control') }}
+                            </div>
+                             <div class="form-group">
+                                {{ render_field(form.category, class='form-control') }}
+                            </div>
+                            <div class="form-group">
+                                {{ render_field(form.date_created, class='form-control') }}
+                            </div>
+                            <div class="form-group">
+                                {{ render_field(form.is_available, class='form-item') }}
+                            </div>
+                            {{ render_field(form.submit, class='btn btn-primary', value='Save') }}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock %}

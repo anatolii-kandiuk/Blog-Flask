@@ -1,0 +1,27 @@
+{% from "_render_field.html" import render_field %}
+{% from "_render_flash.html" import render_flash %}
+{% extends 'base.html' %}
+
+{% block content %}
+    {{ render_flash() }}
+    <div class="container">
+        <div class="row">
+        <h2><b>Personal Computers</b><hr></h2>
+            {% for pc in personal_computers %}
+                <div class="card col-md-4 mt-4">
+                    <img class="card-img-top" src="{{ url_for('static', filename='profile_pics/' + pc.image_file) }}">
+                    <div class="card-body">
+                        <h4><a href="{{ url_for('pc.detail', id=pc.id) }}">{{ pc.firm }}</a></h4>
+                        <p class="card-text">Processor: {{ pc.type_processor }}</p>
+                        <p class="card-text">Clock frequency: {{ pc.clock_frequency }}</p>
+                        <p class="card-text">RAM: {{ pc.category.amount_ram }}</p>
+
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Created: {{ pc.date_created }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
