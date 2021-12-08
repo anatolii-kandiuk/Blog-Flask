@@ -13,8 +13,10 @@ login_manager.login_message_category = 'warning'
 from . import views
 from .auth import auth
 from .personal_computers import personal_computers
+from .posts import posts
 #from .forms import form
 
 app.register_blueprint(auth, url_prefix='/auth')
 app.register_blueprint(personal_computers, url_prefix='/personal_computers')
+app.register_blueprint(posts, url_prefix='/posts')
 #app.register_blueprint(form, url_prefix='/forms')

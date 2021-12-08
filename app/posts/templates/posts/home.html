@@ -1,0 +1,33 @@
+{% from "_render_field.html" import render_field %}
+{% from "_render_flash.html" import render_flash %}
+{% extends 'base.html' %}
+
+{% block content %}
+    {{ render_flash() }}
+    <div class="container">
+        <div class="row">
+            <h2><b>Posts</b><hr></h2>
+            {% for post in posts %}
+                <div class="card col-md-4 mt-4">
+                    <img class="card-img-top" src="{{ url_for('static', filename='profile_pics/' + post.image_file) }}">
+                    <div class="card-body">
+                        <h4><a href="{{ url_for('posts.detail', id=post.id) }}">{{ post.title }}</a></h4>
+                        {% if current_user.id == post.user_id %}
+                            <div class="btn-group btn-toggle">
+                                <button class="btn btn-sm {{ 'btn-success' if post.enabled else 'btn-danger' }}">
+                                    {{ 'On' if post.enabled else 'Off' }}
+                                </button>
+                            </div>
+                        {% endif %}
+
+                        <p class="card-text">Type: {{ post.type.value }}</p>
+                        <p class="card-text">: {{ post.text[:50] + '...' }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Created: {{ post.created }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
