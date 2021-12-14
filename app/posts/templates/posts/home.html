@@ -6,21 +6,25 @@
     {{ render_flash() }}
     <div class="container">
         <div class="row">
-            <h2><b>Posts</b><hr></h2>
-            {% for post in posts %}
+            <h2><b>Posts</b></h2><hr>
+            {% for post in pages.items %}
                 <div class="card col-md-4 mt-4">
-                    <img class="card-img-top" src="{{ url_for('static', filename='profile_pics/' + post.image_file) }}">
                     <div class="card-body">
-                        <h4><a href="{{ url_for('posts.detail', id=post.id) }}">{{ post.title }}</a></h4>
-                        {% if current_user.id == post.user_id %}
-                            <div class="btn-group btn-toggle">
-                                <button class="btn btn-sm {{ 'btn-success' if post.enabled else 'btn-danger' }}">
-                                    {{ 'On' if post.enabled else 'Off' }}
-                                </button>
-                            </div>
-                        {% endif %}
-
-                        <p class="card-text">Type: {{ post.type.value }}</p>
+                    <img class="card-img-top" src="{{ url_for('static', filename='profile_pics/' + post.image_file) }}" alt="...">
+                    </div>
+                    <div class="card-body">
+                        <h4>
+                            <a href="{{ url_for('posts.detail', id=post.id) }}">{{ post.title }}</a>
+                            {% if current_user.id == post.user_id %}
+                                <div class="btn-group btn-toggle">
+                                    <button class="btn btn-sm {{ 'btn-success' if post.enabled else 'btn-danger' }}">
+                                        {{ 'On' if post.enabled else 'Off' }}
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </h4>
+                        <p class="card-text"><b>Category:</b> {{ post.post_category.name }}</p>
+                        <p class="card-text"><b>Type:</b> {{ post.type.value }}</p>
                         <p class="card-text">: {{ post.text[:50] + '...' }}</p>
                     </div>
                     <div class="card-footer">
@@ -28,6 +32,27 @@
                     </div>
                 </div>
             {% endfor %}
+        </div>
+    </div>
+    <div id="navigation" class="container my-4">
+        <div class="row">
+            <div class="col-md-3 mx-auto">
+                <nav>
+                    <ul class="pagination">
+                        <li {% if not pages.has_prev %} class="page-item disabled" {% endif %}>
+                            <a class="page-link" href="./?page={{ pages.prev_num }}" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        {% for page in pages.iter_pages() %}
+                        <li {% if page == pages.page %} class="page-item active" {% endif %} aria-current="page">
+                            <a class="page-link" href="./?page={{ page }}"><span class="sr-only">{{ page }}</span></a>
+                        </li>
+                        {% endfor %}
+                        <li {% if not pages.has_next %} class="page-item disabled" {% endif %}>
+                            <a class="page-link" href="./?page={{ pages.next_num }}" tabindex="-1" aria-disabled="true">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -18,13 +18,16 @@
                     {{ render_field(form.title, class='form-control', placeholder='Type title') }}
                 </div>
                 <div class="form-group">
+                    {{ render_field(form.category, class='form-control') }}
+                </div>
+                <div class="form-group">
                     {{ render_field(form.type, class='form-control', placeholder='Choose type') }}
                 </div>
                 <div class="form-group">
                     {{ render_field(form.enabled, class='form-item') }}
                 </div>
                 <div class="form-group">
-                    {{ render_field(form.image_file, class='form-control') }}
+                    {{ render_field(form.image, class='form-control') }}
                 </div>
                 <div class="form-group">
                     {{ render_field(form.text, class='form-control', placeholder='Type text') }}

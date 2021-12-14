@@ -1,22 +1,22 @@
 {% from "_render_field.html" import render_field %}
 {% from "_render_flash.html" import render_flash %}
 {% extends 'base.html' %}
+
 {% block content %}
     {{ render_flash() }}
     <div class="container d-flex justify-content-center align-items-center col-md-6">
         <div class="row">
             <img class="img w-100 d-block" src="{{ url_for('static', filename='profile_pics/' + pk.image_file) }}">
-             <hr>
+            <hr>
             <div class="body">
                 <h4>{{ pk.title }}</h4>
                 <p class="text"><b>{{ pk.type.value }}</b></p>
                 <p class="text">{{ pk.text }}</p>
-
             </div>
             <div class="footer">
                 <small class="text-muted">Created: {{ pk.created }}</small>
             </div>
-             <hr>
+            <hr>
             <div class="buttons">
                 {% if current_user.id == pk.user_id %}
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -27,7 +27,9 @@
                         <button class="btn btn-primary">Edit</button>
                     </a>
                 {% endif %}
-
+                <a href="{{ url_for('posts.home') }}">
+                    <button class="btn btn-success">Posts</button>
+                </a>
             </div>
         </div>
 
