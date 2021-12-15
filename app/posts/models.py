@@ -2,24 +2,29 @@ from .. import db
 
 import enum
 
-# post_tag = db.Table(
-#     db.Column('id', db.Integer, db.ForeignKey('post_tag.id')),
-#     db.Column('id', db.Integer, db.ForeignKey('post.id'))
-# )
+post_tags = db.Table(
+    'post_tags',
+    db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
+    db.Column('tag_id', db.Integer, db.ForeignKey('post_tag.id'))
+)
+
+
+class PostTag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+
 
 class PostCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), nullable=False)
     post = db.relationship('Post', backref='post_category', lazy=True)
 
-# class PostTag(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String, nullable=False)
 
 class PostType(enum.Enum):
     Video = 'Video'
     Article = 'Article'
     Other = 'Other'
+
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,9 +36,10 @@ class Post(db.Model):
     enabled = db.Column(db.Boolean, nullable=False, default=True,)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     category_post_id = db.Column(db.Integer, db.ForeignKey('post_category.id'), nullable=False)
-    # tag = db.relationship('PostTag', secondary=post_tag, backref=db.backref('subscribers', lazy='dynamic'))
+    tag = db.relationship("PostTag", secondary=post_tags, backref=db.backref('post', lazy='dynamic'))
 
     def __repr__(self):
         return f"Post('{self.id}', '{self.title}', '{self.text}', '{self.created}')"
+
 
 #db.create_all()

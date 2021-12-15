@@ -10,7 +10,14 @@
             <hr>
             <div class="body">
                 <h4>{{ pk.title }}</h4>
+                <p class="text"><b>Category:</b> {{ pk.post_category.name }}</p>
                 <p class="text"><b>{{ pk.type.value }}</b></p>
+                <p class="text">
+                    <b>Tags:<b>
+                        {% for t in pk.tag %}
+                            {{ t.name }},
+                        {% endfor %}
+                </p>
                 <p class="text">{{ pk.text }}</p>
             </div>
             <div class="footer">

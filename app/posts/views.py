@@ -5,7 +5,7 @@ from PIL import Image
 from flask import url_for, render_template, flash, redirect, current_app, request
 from .forms import CreatePost, CategoryForm
 from . import posts
-from .models import Post, PostCategory
+from .models import Post, PostCategory, PostTag
 from .. import db
 from flask_login import current_user, login_required
 
@@ -30,6 +30,7 @@ def home():
 def create():
     form = CreatePost()
     form.category.choices = [(category.id, category.name) for category in PostCategory.query.all()]
+    form.tag.choices = [(tag.id, tag.name) for tag in PostTag.query.all()]
 
     if form.validate_on_submit():
         if form.image.data:
@@ -37,13 +38,16 @@ def create():
         else:
             picture_file = 'post_default.jpg'
 
+        tags = [PostTag.query.get(tag_id) for tag_id in form.tag.data]
+
         post = Post(title=form.title.data,
                     text=form.text.data,
                     image_file=picture_file,
                     type=form.type.data,
                     enabled=form.enabled.data,
                     user_id=current_user.id,
-                    category_post_id=form.category.data)
+                    category_post_id=form.category.data,
+                    tag=tags)
 
         db.session.add(post)
         db.session.commit()
@@ -64,6 +68,7 @@ def update(id):
 
     form = CreatePost()
     form.category.choices = [(category.id, category.name) for category in PostCategory.query.all()]
+    form.tag.choices = [(tag.id, tag.name) for tag in PostTag.query.all()]
 
     if form.validate_on_submit():
         post.title = form.title.data
@@ -72,6 +77,7 @@ def update(id):
         post.enabled = form.enabled.data
         post.image_file = save_picture(form.image.data) if form.image.data else 'post_default.jpg'
         post.category_post_id = form.category.data
+        post.tag = [PostTag.query.get(tag_id) for tag_id in form.tag.data]
 
         db.session.add(post)
         db.session.commit()
@@ -85,6 +91,7 @@ def update(id):
     form.enabled.data = post.enabled
     form.image.data = post.image_file
     form.category.data = post.category_post_id
+    form.tag.data = post.tag
 
     return render_template('posts/create.html', form=form)
 

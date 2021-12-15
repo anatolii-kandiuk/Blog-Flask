@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SelectField, SubmitField, BooleanField
+from wtforms import StringField, TextAreaField, SelectField, SubmitField, BooleanField, SelectMultipleField
 from wtforms.validators import Length, InputRequired
 from flask_wtf.file import FileField, FileAllowed
 
@@ -10,9 +10,11 @@ class CreatePost(FlaskForm):
     type = SelectField('Type', choices=[('Video', 'Video'),
                                         ('Article', 'Article'),
                                         ('Other', 'Other')])
+    category = SelectField(u'Category', validators=[InputRequired()], coerce=str)
 
-    category = SelectField(u'Category', coerce=str)
+    tag = SelectMultipleField(u'Tag', validators=[InputRequired()], coerce=int)
     enabled = BooleanField('Enabled')
+
     submit = SubmitField('')
 
 class CategoryForm(FlaskForm):
