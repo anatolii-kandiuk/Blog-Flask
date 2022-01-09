@@ -1,22 +1,31 @@
 from flask import request, jsonify
-from .. import db
+from sqlalchemy.exc import IntegrityError
+from .. import db, bcrypt
 from functools import wraps
-
 from ..posts.models import PostCategory
 from . import api
-
-api_username = 'admin'
-api_password = 'admin'
+from ..auth.models import User
 
 
 def protected(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         auth = request.authorization
-        if auth and auth.username == api_username \
-           and auth.password == api_password:
+
+        if not auth:
+            return jsonify({'message': 'Need authorization'}), 401
+
+        try:
+            user_db = User.query.filter_by(email=auth.username).first()
+            is_password = bcrypt.check_password_hash(user_db.password, auth.password)
+        except AttributeError:
+            return jsonify({'message': 'Invalid login or password'})
+
+        if is_password:
             return f(*args, **kwargs)
+
         return jsonify({'message': 'Authentication failed!'}), 403
+
     return decorated
 
 
@@ -30,7 +39,6 @@ def get_categories():
         category_dict = {}
         category_dict['id'] = category.id
         category_dict['name'] = category.name
-
         categories_json.append(category_dict)
 
     return jsonify({'categories': categories_json})
@@ -55,18 +63,21 @@ def add_category():
     name = request.get_json()['category']['name']
 
     if not name:
-        return jsonify({'message': 'Not key name'})
+        return jsonify({'message': 'Not key name'}), 422
 
-    categories = PostCategory.query.all()
+    category = PostCategory.query.filter_by(name=name).first()
 
-    for category in categories:
-        if category.name == name:
-            return jsonify({'message': f'The category "{name}" already exist!'})
+    if category:
+        return jsonify({'message': f'The category "{name}" already exist!'})
 
     new_category = PostCategory(name=name)
 
-    db.session.add(new_category)
-    db.session.commit()
+    try:
+        db.session.add(new_category)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({'message': 'DB ERROR'})
 
     return get_category(new_category.id)
 
@@ -79,22 +90,22 @@ def edit_category(category_id):
     if not name:
         return jsonify({'message': 'Not key name'})
 
-    categories = PostCategory.query.all()
+    category = PostCategory.query.filter_by(name=name).first()
 
-    if not PostCategory.query.get_or_404(category_id):
-        return jsonify({'message': 'Category does not exist'}), 404
-
-    for category in categories:
-        if category.name == name:
-            return jsonify({'message': f'The category "{name}" already exist!'})
+    if category:
+        return jsonify({'message': f'The category "{name}" already exist!'})
 
     category = PostCategory.query.get_or_404(category_id)
+
+    if not category:
+        return jsonify({'message': 'Category does not exist'}), 404
+
     category.name = name
     db.session.commit()
 
     return jsonify({'category':
                     {'id': category.id,
-                     'name': category.name}})
+                     'name': category.name}}), 201
 
 
 @api.route('/category/<int:category_id>', methods=['DELETE'])

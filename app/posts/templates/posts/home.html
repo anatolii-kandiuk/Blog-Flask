@@ -8,32 +8,34 @@
         <div class="row">
             <h2><b>Posts</b></h2><hr>
             {% for post in pages.items %}
-                <div class="card col-md-4 mt-4">
-                    <div class="card-body">
-                    <img class="card-img-top" src="{{ url_for('static', filename='profile_pics/' + post.image_file) }}" alt="...">
-                    </div>
-                    <div class="card-body">
-                        <h4>
-                            <a href="{{ url_for('posts.detail', id=post.id) }}">{{ post.title }}</a>
-                            {% if current_user.id == post.user_id %}
-                                <div class="btn-group btn-toggle">
-                                    <button class="btn btn-sm {{ 'btn-success' if post.enabled else 'btn-danger' }}">
-                                        {{ 'On' if post.enabled else 'Off' }}
-                                    </button>
-                                </div>
-                            {% endif %}
-                        </h4>
-                        <p class="card-text"><b>Category:</b> {{ post.post_category.name }}</p>
-                        <p class="card-text"><b>Type:</b> {{ post.type.value }}</p>
-                        <p class="card-text">: {{ post.text[:50] + '...' }}</p>
-                    </div>
-                    <div class="card-footer">
-                        <small class="text-muted">Created: {{ post.created }}</small>
+
+                <div class="row mb-2 d-flex justify-content-center align-items-center">
+                    <div class="col-md-7">
+                        <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                            <div class="card-body d-flex flex-column align-items-start">
+                                <strong class="d-inline-block mb-2 text-success"> {{ post.post_category.name }} </strong>
+                                <h3 class="mb-0 text-dark">
+                                    {{ post.title }}
+                                    {% if current_user.id == post.user_id %}
+                                        <button class="btn btn-sm {{ 'btn-success' if post.enabled else 'btn-danger' }}">
+                                            {{ 'On' if post.enabled else 'Off' }}
+                                        </button>
+                                    {% endif %}
+                                </h3>
+
+                                <div class="mb-1 text-muted"> {{ post.created }} </div>
+                                <p class="card-text mb-auto"> {{ post.text[:100]|safe + '...' }} </p>
+                                <a href="{{ url_for('posts.detail', id=post.id) }}">Continue reading</a>
+                            </div>
+                            <img class="card-img-right flex-auto d-none d-md-block" src="{{ url_for('static', filename='profile_pics/' + post.image_file) }}" alt="Card image cap">
+                        </div>
                     </div>
                 </div>
+
             {% endfor %}
         </div>
     </div>
+
     <div id="navigation" class="container my-4">
         <div class="row">
             <div class="col-md-3 mx-auto">
@@ -42,10 +44,17 @@
                         <li {% if not pages.has_prev %} class="page-item disabled" {% endif %}>
                             <a class="page-link" href="./?page={{ pages.prev_num }}" tabindex="-1" aria-disabled="true">Previous</a>
                         </li>
-                        {% for page in pages.iter_pages() %}
-                        <li {% if page == pages.page %} class="page-item active" {% endif %} aria-current="page">
-                            <a class="page-link" href="./?page={{ page }}"><span class="sr-only">{{ page }}</span></a>
-                        </li>
+                        {% for page in pages.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                            {% if page %}
+                                <li {% if page == pages.page %} class="page-item active" {% endif %} aria-current="page">
+                                    <a class="page-link" href="./?page={{ page }}"><span class="sr-only">{{ page }}</span></a>
+                                </li>
+                            {% else %}
+                                <li class="page-item" aria-current="page">
+                                    <a class="page-link" href="#" ><span class="sr-only">...</span></a>
+                                </li>
+                            {% endif %}
+
                         {% endfor %}
                         <li {% if not pages.has_next %} class="page-item disabled" {% endif %}>
                             <a class="page-link" href="./?page={{ pages.next_num }}" tabindex="-1" aria-disabled="true">Next</a>
@@ -55,4 +64,5 @@
             </div>
         </div>
     </div>
+
 {% endblock %}

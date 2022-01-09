@@ -6,22 +6,15 @@ from flask import url_for, render_template, flash, redirect, current_app, reques
 from .forms import CreatePost, CategoryForm
 from . import posts
 from .models import Post, PostCategory, PostTag
-from .. import db
+from .. import db, ckeditor
 from flask_login import current_user, login_required
 
 
 @posts.route('/', methods=['GET', 'POST'])
 def home():
-    page = request.args.get('page')
+    page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.category_post_id)
-
-    if page and page.isdigit():
-        page = int(page)
-    else:
-        page = 1
-
     pages = posts.paginate(page=page, per_page=3)
-
     return render_template('posts/home.html', pages=pages)
 
 
