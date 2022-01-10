@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
+from flask_admin import Admin
 from config import config
 
 
@@ -22,6 +23,7 @@ class App:
 app = App().get_app()
 bcrypt = Bcrypt()
 db = SQLAlchemy()
+admin = Admin()
 migrate = Migrate()
 ckeditor = CKEditor()
 login_manager = LoginManager()
@@ -33,6 +35,7 @@ def create_app(config_name='default'):
     """Construct the core application."""
     app.config.from_object(config.get(config_name))
     db.init_app(app)
+    admin.init_app(app)
     ckeditor.init_app(app)
     migrate.init_app(app, db, render_as_batch=True)
     login_manager.init_app(app)

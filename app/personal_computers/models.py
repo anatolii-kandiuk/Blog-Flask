@@ -1,9 +1,11 @@
 from .. import db
 
+
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     amount_ram = db.Column(db.Integer, nullable=False)
     pc = db.relationship('PersonalComputer', backref='category', lazy=True)
+
 
 class PersonalComputer(db.Model):
     id = db.Column(db.Integer, primary_key=True)

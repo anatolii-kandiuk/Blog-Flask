@@ -1,9 +1,12 @@
-from .. import db, login_manager
+from flask_admin.contrib.sqla import ModelView
+from .. import db, login_manager, admin
 from flask_login import UserMixin
+
 
 @login_manager.user_loader
 def user_loader(user_id):
     return User.query.get(int(user_id))
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -17,4 +20,7 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.password}')"
 
-#db.create_all()
+
+admin.add_view(ModelView(User, db.session))
+
+# db.create_all()

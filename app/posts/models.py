@@ -1,4 +1,6 @@
-from .. import db
+from flask_admin.contrib.sqla import ModelView
+
+from .. import db, admin
 
 import enum
 
@@ -42,4 +44,8 @@ class Post(db.Model):
         return f"Post('{self.id}', '{self.title}', '{self.text}', '{self.created}')"
 
 
-#db.create_all()
+admin.add_view(ModelView(Post, db.session))
+admin.add_view(ModelView(PostCategory, db.session))
+admin.add_view(ModelView(PostTag, db.session))
+
+# db.create_all()
